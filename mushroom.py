@@ -16,8 +16,8 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Mushroom Destroyer Game")
 
 # Colors
-background_color = (255, 255, 255)
-line_color = (0, 0, 0)
+background_color = (00, 80, 00)
+line_color = (00, 80, 00)
 mushroom_color = (255, 0, 0)
 highlight_color = (0, 255, 0)
 
@@ -64,7 +64,7 @@ def destroy_mushroom(x, y):
     if array[x][y] == 1:
         array[x][y] = 0
         spawn_mushroom()
-        timer += 5  # Increase timer by 5 seconds
+        timer += 1  # Increase timer by 5 seconds
 
 # Main game loop
 run = True
