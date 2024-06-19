@@ -16,20 +16,19 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Mushroom Destroyer Game")
 
 # Colors
-background_color = (00, 80, 00)
-line_color = (00, 80, 00)
+background_color = (0, 80, 0)
+line_color = (0, 80, 0)
 mushroom_color = (255, 0, 0)
-highlight_color = (0, 255, 0)
+text_color = (255, 255, 255)
 
 # Game variables
 grid_size = 10
 array = [[0 for _ in range(grid_size)] for _ in range(grid_size)]
-mushroom_position = (random.randint(0, grid_size - 1), random.randint(0, grid_size - 1))
-array[mushroom_position[0]][mushroom_position[1]] = 1
+score = 0
 
 # Timer variables
 timer = 30  # Start with 30 seconds
-font = pygame.font.Font(None, 36)  # Font for rendering the timer
+font = pygame.font.Font(None, 36)  # Font for rendering the timer and other texts
 timer_event = pygame.USEREVENT + 1  # Custom event for timer countdown
 pygame.time.set_timer(timer_event, 1000)  # Set the timer to trigger every second
 
@@ -46,8 +45,12 @@ def draw_mushrooms():
                 pygame.draw.circle(screen, mushroom_color, (j * cell_size + cell_size // 2, i * cell_size + cell_size // 2), cell_size // 2 - 5)
 
 def draw_timer():
-    timer_text = font.render(f"Time: {timer}", True, (0, 0, 0))
+    timer_text = font.render(f"Time: {timer}", True, text_color)
     screen.blit(timer_text, (10, 10))
+
+def draw_score():
+    score_text = font.render(f"Score: {score}", True, text_color)
+    screen.blit(score_text, (screen_width - 150, 10))
 
 def reset_array():
     for i in range(grid_size):
@@ -60,33 +63,74 @@ def spawn_mushroom():
     array[mushroom_position[0]][mushroom_position[1]] = 1
 
 def destroy_mushroom(x, y):
-    global timer
+    global score
     if array[x][y] == 1:
         array[x][y] = 0
         spawn_mushroom()
-        timer += 1  # Increase timer by 5 seconds
+        score += 1  # Increase score by 1
 
-# Main game loop
-run = True
-while run:
+def entry_screen():
     screen.fill(background_color)
-    draw_grid()
-    draw_mushrooms()
-    draw_timer()
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            grid_x = mouse_y // cell_size
-            grid_y = mouse_x // cell_size
-            destroy_mushroom(grid_x, grid_y)
-        elif event.type == timer_event:
-            timer -= 1
-            if timer <= 0:
-                run = False  # End the game when the timer reaches zero
-    
+    title_text = font.render("Mushroom Destroyer Game", True, text_color)
+    instruction_text = font.render("Press SPACE to Start", True, text_color)
+    screen.blit(title_text, (screen_width // 4, screen_height // 3))
+    screen.blit(instruction_text, (screen_width // 4, screen_height // 2))
     pygame.display.flip()
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                waiting = False
 
-pygame.quit()
+def exit_screen():
+    screen.fill(background_color)
+    final_score_text = font.render(f"Final Score: {score}", True, text_color)
+    exit_text = font.render("Press ESC to Exit", True, text_color)
+    screen.blit(final_score_text, (screen_width // 3, screen_height // 3))
+    screen.blit(exit_text, (screen_width // 3, screen_height // 2))
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                waiting = False
+
+def main():
+    global timer, score
+    entry_screen()
+    reset_array()
+    spawn_mushroom()
+    run = True
+    while run:
+        screen.fill(background_color)
+        draw_grid()
+        draw_mushrooms()
+        draw_timer()
+        draw_score()
+       
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                grid_x = mouse_y // cell_size
+                grid_y = mouse_x // cell_size
+                destroy_mushroom(grid_x, grid_y)
+            elif event.type == timer_event:
+                timer -= 1
+                if timer <= 0:
+                    run = False  # End the game when the timer reaches zero
+       
+        pygame.display.flip()
+   
+    exit_screen()
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
