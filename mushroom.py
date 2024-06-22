@@ -6,13 +6,16 @@ import os
 pygame.init()
 script_dir = os.path.dirname(__file__)
 image_path = os.path.join(script_dir, 'mushroom.png')
+audio_game_over_path = os.path.join(script_dir, "game_over.wav")
+audio_pop_path = os.path.join(script_dir, "pop.wav")
 
 # Screen dimensions
 screen_width = 500
 screen_height = 500
 cell_size = 50
 mushroom_image = pygame.image.load(image_path)
-##mushroom_size = 
+game_over_sound = pygame.mixer.Sound(audio_game_over_path)
+pop_sound = pygame.mixer.Sound(audio_pop_path)
 
 # Create the screen
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -74,6 +77,7 @@ def destroy_mushroom(x, y):
         array[x][y] = 0
         spawn_mushroom()
         score += 1  # Increase score by 1
+        pop_sound.play()
 
 def entry_screen():
     screen.fill(background_color)
@@ -132,6 +136,7 @@ def main():
                 timer -= 1
                 if timer <= 0:
                     run = False  # End the game when the timer reaches zero
+                    game_over_sound.play()
        
         pygame.display.flip()
    
