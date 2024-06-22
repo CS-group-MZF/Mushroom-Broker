@@ -1,13 +1,18 @@
 import pygame
 import random
+import os
 
 # Initialize Pygame
 pygame.init()
+script_dir = os.path.dirname(__file__)
+image_path = os.path.join(script_dir, 'mushroom.png')
 
 # Screen dimensions
 screen_width = 500
 screen_height = 500
 cell_size = 50
+mushroom_image = pygame.image.load(image_path)
+##mushroom_size = 
 
 # Create the screen
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -42,7 +47,8 @@ def draw_mushrooms():
     for i in range(grid_size):
         for j in range(grid_size):
             if array[i][j] == 1:
-                pygame.draw.circle(screen, mushroom_color, (j * cell_size + cell_size // 2, i * cell_size + cell_size // 2), cell_size // 2 - 5)
+                ##pygame.draw.circle(screen, mushroom_color, (j * cell_size + cell_size // 2, i * cell_size + cell_size // 2), cell_size // 2 - 5)
+                screen.blit(mushroom_image, (j * cell_size, i * cell_size))
 
 def draw_timer():
     timer_text = font.render(f"Time: {timer}", True, text_color)
